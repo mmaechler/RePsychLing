@@ -3,7 +3,7 @@
 \docType{data}
 \title{Baayen and Milin }
 \description{
-  Data described in Baayen and Milin (2010). 
+  Data described in Baayen and Milin (2010).
 }
 \format{
   A data frame with 275996 observations on the following 24 variables.
@@ -37,13 +37,13 @@
   }
 }
 \source{
-  Baayen, R. H. and Milin, P (2010) Analyzing reaction times. 
-  \emph{International Journal of Psychological Research}, 
+  Baayen, R. H. and Milin, P (2010) Analyzing reaction times.
+  \emph{International Journal of Psychological Research},
   \bold{3.2}, pp. 12-28.
 }
 \references{
-  Baayen, R. H. and Milin, P (2010) Analyzing reaction times. 
-  \emph{International Journal of Psychological Research}, 
+  Baayen, R. H. and Milin, P (2010) Analyzing reaction times.
+  \emph{International Journal of Psychological Research},
   \bold{3.2}, pp. 12-28.
 }
 \examples{
@@ -64,14 +64,12 @@ poems$LogMultipleChoiceRT   = log(poems$MultipleChoiceRT)
 poems$LogNPoems             = log(poems$NPoems)
 poems$LogNumberOfMeanings   = log(poems$NumberOfMeanings+1)
 
-\dontrun{
-
-p = poems[,c("Age", "LogNPoems", "LogMultipleChoiceRT", "NumberOfWordsIntoLine", "SentenceLength",
-                     "WordFrequencyInPoem", "RhymeFreqInPoem", "OnsetFreqInPoem", "WordLength", 
-                     "NumberOfMorphemes",
-                     "RecFamilySize", "InflectionalEntropy", "LogLemmaFrequency", "LogWordFormFrequency",
-                     "LogNumberOfMeanings")]
-pc = prcomp(p,center=TRUE, scale=TRUE)
+p <- poems[,c("Age", "LogNPoems", "LogMultipleChoiceRT", "NumberOfWordsIntoLine",
+             "SentenceLength", "WordFrequencyInPoem", "RhymeFreqInPoem",
+             "OnsetFreqInPoem", "WordLength", "NumberOfMorphemes", "RecFamilySize",
+             "InflectionalEntropy", "LogLemmaFrequency", "LogWordFormFrequency",
+             "LogNumberOfMeanings")]
+pc <- prcomp(p, center=TRUE, scale=TRUE)
 round(pc$rotation[,1:7],2)
 #                        PC1   PC2   PC3   PC4   PC5   PC6   PC7
 #Age                    0.00  0.01  0.00  0.03  0.61  0.49 -0.01
@@ -90,7 +88,6 @@ round(pc$rotation[,1:7],2)
 #LogWordFormFrequency  -0.45  0.16 -0.12  0.10  0.00 -0.01 -0.25
 #LogNumberOfMeanings    0.11 -0.15 -0.55  0.44 -0.01 -0.01  0.01
 
-
 poems$PC1 = pc$x[,1]
 poems$PC2 = pc$x[,2]
 poems$PC3 = pc$x[,3]
@@ -99,23 +96,24 @@ poems$PC5 = pc$x[,5]
 poems$PC6 = pc$x[,6]
 poems$PC7 = pc$x[,7]
 
+\donttest{% takes too much time
+
 library(lme4)
-poems.lmer = lmer(LogReadingTime ~ 
-  PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 +
-  HasPunctuationMark*Sex + Trial + PositionBegMidEnd +
-  (1|Poem) + (1|Word) + (1|Subject),
-  #(1+LogWordFormFrequency+NumberOfMorphemes|Subject) ,
-  data=poems, REML=FALSE)
+poems.lmer <-
+   lmer(LogReadingTime ~ PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 +
+                         HasPunctuationMark*Sex + Trial + PositionBegMidEnd +
+              (1|Poem) + (1|Word) + (1|Subject), #(1+LogWordFormFrequency+NumberOfMorphemes|Subject),
+        data=poems, REML=FALSE)
 print(summary(poems.lmer), corr=FALSE)
 
 chf <- diag(c(diag(
-  getME(poems.lmer, "Tlist")[[2]]), 
-  getME(poems.lmer, "Tlist")[[1]], 
+  getME(poems.lmer, "Tlist")[[2]]),
+  getME(poems.lmer, "Tlist")[[1]],
   getME(poems.lmer, "Tlist")[[3]]))
-chf[1:3, 1:3] <- getME(poems.lmer, "Tlist")[[2]]             
+chf[1:3, 1:3] <- getME(poems.lmer, "Tlist")[[2]]
 
 sv <- svd(chf)
 round(sv$d^2/sum(sv$d^2)*100, 1)
-}
+}% dont..}
 }
 \keyword{datasets}
