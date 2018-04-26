@@ -23,7 +23,7 @@ options(width=92,
 ## Structure of the data
 
 The data from Kronmüller and Barr (2007) is available as the `kb07` data frame in the
-[RePscyhLing package](https://github.com/dmbates/RePsychLing) for [R](http://www.r-project.org)
+[RePscyhLing package](https://github.com/dmbates/RePsychLing) for [R](http://www.R-project.org)
 ```{r kb07str}
 str(kb07)
 ```
@@ -54,7 +54,7 @@ The response, `RTtrunc`, is the reaction time after truncating some unusually la
 
 ## Formulating the Stan model
 
-[Stan](http://stan-mc.org) is a system for creating Markov chain Monte Carlo (MCMC) samplers for statistical models.
+[Stan](http://mc-stan.org) is a system for creating Markov chain Monte Carlo (MCMC) samplers for statistical models.
 
 In the model specification the data, including dimensions of arrays, are described first.
 ```{r standat}
