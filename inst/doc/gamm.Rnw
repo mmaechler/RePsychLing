@@ -1,5 +1,5 @@
 %\VignetteIndexEntry{Addressing residual autocorrelation with generalized additive mixed models}
-%\VignetteEngine{knitr::knit}
+%\VignetteEngine{knitr::knitr}
 \documentclass[11pt]{article}
 \usepackage{bm}
 \usepackage{geometry}
@@ -85,10 +85,10 @@ hook_output <- knit_hooks$get("output")
 knit_hooks$set(output=function(x, options) {
   if (options$results != "asis") {
     # Split string into separate lines.
-    x <- unlist(stringr::str_split(x, "\n")) 
+    x <- unlist(strsplit(x, "\n")) # unlist(stringr::str_split(x, "\n"))
     # Truncate each line to length specified.
     if (!is.null(m <- options$out.truncate)) {
-      len <- nchar(x) 
+      len <- nchar(x)
       x[len>m] <- paste0(substr(x[len>m], 0, m-3), "...")
     }
     # Paste lines back together.
@@ -102,7 +102,7 @@ knit_hooks$set(output=function(x, options) {
 \renewcommand\floatpagefraction{.9}
 \renewcommand\topfraction{.9}
 \renewcommand\bottomfraction{.9}
-\renewcommand\textfraction{.1}   
+\renewcommand\textfraction{.1}
 \setcounter{totalnumber}{50}
 \setcounter{topnumber}{50}
 \setcounter{bottomnumber}{50}
@@ -182,18 +182,18 @@ autocorrelations.  We therefore inspect the autocorrelations for the individual
 subjects using a trellis graph (Figure~\ref{fig:autoMod0}).
 <<autoMod0,echo=TRUE,eval=TRUE,fig=TRUE,out.width='1.0\\textwidth',fig.align='center',fig.path="graphs/",fig.cap="Autocorrelations in the initial model for each subject-specific time series.">>=
 dfr = acf_resid(dat.gam0,        # acf_resid from package itsadug
-  split_pred=list(subj=dat$subj), 
-  plot=FALSE, 
+  split_pred=list(subj=dat$subj),
+  plot=FALSE,
   return_all=TRUE)$dataframe
 civec = dfr[dfr$lag==0,]$ci      # vector of confidence intervals for xyplot
-xyplot(acf ~ lag | subj, type = "h", data = dfr, col.line = "black", 
+xyplot(acf ~ lag | subj, type = "h", data = dfr, col.line = "black",
   panel = function(...) {
     panel.abline(h = civec[panel.number()], col.line = "grey")
     panel.abline(h = -civec[panel.number()], col.line = "grey")
     panel.abline(h = 0, col.line = "black")
     panel.xyplot(...)
-  }, 
-  strip = strip.custom(bg = "grey90"), 
+  },
+  strip = strip.custom(bg = "grey90"),
   par.strip.text = list(cex = 0.8),
   xlab="lag", ylab="autocorrelation")
 @
@@ -234,7 +234,7 @@ dat.gam1 <- bam(lrt ~ sze * (spt + obj + grv) * orn +
                 data=dat, method="ML")
 @
 As the factor smooths `absorb' the random intercepts, no separate request for
-random intercepts is required.  The model summary  
+random intercepts is required.  The model summary
 <<GAM1aaa,echo=TRUE,eval=FALSE>>=
 summary(dat.gam1)
 @
