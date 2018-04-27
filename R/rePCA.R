@@ -6,6 +6,8 @@
 ##' @param x a merMod object
 ##' @return a \code{prcomplist} object
 ##' @author Douglas Bates
+##' @importFrom lme4 getME
+##' @importFrom Matrix bdiag
 ##' @export
 rePCA <- function(x) UseMethod('rePCA')
 
