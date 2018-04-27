@@ -14,7 +14,7 @@
       syllabeme carries mid level tone (TRUE/FALSE)}
     \item{\code{LogFreq}}{the frequency of the compound}
     \item{\code{LogFreqSyl1}}{the frequency of the left syllabeme}
-    \item{\code{LogFreySyl2}}{the frequency of the right syllabeme}
+    \item{\code{LogFreqSyl2}}{the frequency of the right syllabeme}
   }
 }
 \source{
