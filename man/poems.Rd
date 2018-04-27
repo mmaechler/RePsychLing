@@ -12,7 +12,8 @@
     \item{\code{Subject}}{a factor with participant identifiers}
     \item{\code{Sex}}{a factor with levels \code{m} (male) and \code{f} (female)}
     \item{\code{Age}}{a numeric vector specifying the participant's age}
-    \item{\code{NPoems}}{a numeric vector of the self-reported maximum number of poems read annually, according to a four-choice question}
+    \item{\code{NPoems}}{a numeric vector of the self-reported maximum number of poems read annually,
+      according to a four-choice question}
     \item{\code{MultipleChoiceRT}}{a numeric vector with the response latency to the four-choice question}
     \item{\code{Trial}}{a numeric vector specifying the rank of the item in the subject's experimental list}
     \item{\code{NumberOfWordsIntoLine}}{a numeric vector specifying the position of the
@@ -27,28 +28,29 @@
     \item{\code{OnsetFreqInPoem}}{a numeric vector specifying the frequency of the word's onset in the poem}
     \item{\code{WordLength}}{a numeric vector specifying the length of the word in letters}
     \item{\code{FamilySize}}{a numeric vector specifying the count of morphological family members}
-    \item{\code{InflectionalEntropy}}{a numeric vector specifying Shannon's entropy calculated over the probability distribution of a word's inflected variants}
-    \item{\code{LemmaFrequency}}{a numeric vector specifying the frequency of occurrence of the word in the lemma subsection of the CELEX lexical database}
-    \item{\code{WordFormFrequency}}{a numeric vector specifying the frequency of occurrence of the word's inflected form in the word form subsection of the CELEX lexical database}
+    \item{\code{InflectionalEntropy}}{a numeric vector specifying Shannon's entropy calculated over the
+      probability distribution of a word's inflected variants}
+    \item{\code{LemmaFrequency}}{a numeric vector specifying the frequency of occurrence of
+      the word in the lemma subsection of the CELEX lexical database}
+    \item{\code{WordFormFrequency}}{a numeric vector specifying the frequency of occurrence of
+      the word's inflected form in the word form subsection of the CELEX lexical database}
     \item{\code{NumberOfMeanings}}{a numeric vector specifying the number of synsets in WordNet in which the word is listed}
     \item{\code{IsFunctionWord}}{a factor specifying whether the word is a function word \code{TRUE} or not \code{FALSE}}
-    \item{\code{HasPunctuationMark}}{a factor specifying whether the word is followed by a punctuation mark, levels \cite{FALSE} (absent) and \cite{TRUE} (present)}
+    \item{\code{HasPunctuationMark}}{a factor specifying whether the word is followed by
+      a punctuation mark, levels \cite{FALSE} (absent) and \cite{TRUE} (present)}
     \item{\code{NumberOfMorphemes}}{a numeric vector specifying the scaled number of morphemes in a word}
   }
 }
 \source{
-  Baayen, R. H. and Milin, P (2010) Analyzing reaction times.
-  \emph{International Journal of Psychological Research},
-  \bold{3.2}, pp. 12-28.
+  see \sQuote{References}
 }
 \references{
   Baayen, R. H. and Milin, P (2010) Analyzing reaction times.
-  \emph{International Journal of Psychological Research},
-  \bold{3.2}, pp. 12-28.
+  \emph{International Journal of Psychological Research} \bold{3.2}, 12--28.
 }
 \examples{
 data(poems)
-par(mfrow=c(2,4))
+op <- par(mfrow=c(2,4))
 qqnorm(poems$ReadingTime)
 qqnorm(poems$WordFormFrequency)
 qqnorm(poems$LemmaFrequency)
@@ -56,15 +58,18 @@ qqnorm(poems$FamilySize)
 qqnorm(poems$MultipleChoiceRT)
 qqnorm(poems$NPoems)
 qqnorm(poems$NumberOfMeanings)
-poems$LogReadingTime        = log(poems$ReadingTime)
-poems$LogWordFormFrequency  = log(poems$WordFormFrequency+1)
-poems$LogLemmaFrequency     = log(poems$LemmaFrequency+1)
-poems$RecFamilySize         = -100/(poems$FamilySize+1)
-poems$LogMultipleChoiceRT   = log(poems$MultipleChoiceRT)
-poems$LogNPoems             = log(poems$NPoems)
-poems$LogNumberOfMeanings   = log(poems$NumberOfMeanings+1)
+par(op) # (reverting former state)
 
-p <- poems[,c("Age", "LogNPoems", "LogMultipleChoiceRT", "NumberOfWordsIntoLine",
+poemS <- within(poems, {
+   LogReadingTime       <- log(ReadingTime)
+   LogWordFormFrequency <- log(1+ WordFormFrequency)
+   LogLemmaFrequency    <- log(1+ LemmaFrequency)
+   RecFamilySize        <- -100/(1+ FamilySize)
+   LogMultipleChoiceRT  <- log(MultipleChoiceRT)
+   LogNPoems            <- log(NPoems)
+   LogNumberOfMeanings  <- log(1+NumberOfMeanings)
+})
+p <- poemS[,c("Age", "LogNPoems", "LogMultipleChoiceRT", "NumberOfWordsIntoLine",
              "SentenceLength", "WordFrequencyInPoem", "RhymeFreqInPoem",
              "OnsetFreqInPoem", "WordLength", "NumberOfMorphemes", "RecFamilySize",
              "InflectionalEntropy", "LogLemmaFrequency", "LogWordFormFrequency",
@@ -88,13 +93,13 @@ round(pc$rotation[,1:7],2)
 #LogWordFormFrequency  -0.45  0.16 -0.12  0.10  0.00 -0.01 -0.25
 #LogNumberOfMeanings    0.11 -0.15 -0.55  0.44 -0.01 -0.01  0.01
 
-poems$PC1 = pc$x[,1]
-poems$PC2 = pc$x[,2]
-poems$PC3 = pc$x[,3]
-poems$PC4 = pc$x[,4]
-poems$PC5 = pc$x[,5]
-poems$PC6 = pc$x[,6]
-poems$PC7 = pc$x[,7]
+poemS$PC1 <- pc$x[,1]
+poemS$PC2 <- pc$x[,2]
+poemS$PC3 <- pc$x[,3]
+poemS$PC4 <- pc$x[,4]
+poemS$PC5 <- pc$x[,5]
+poemS$PC6 <- pc$x[,6]
+poemS$PC7 <- pc$x[,7]
 
 \donttest{% takes too much time
 
@@ -103,7 +108,7 @@ poems.lmer <-
    lmer(LogReadingTime ~ PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 +
                          HasPunctuationMark*Sex + Trial + PositionBegMidEnd +
               (1|Poem) + (1|Word) + (1|Subject), #(1+LogWordFormFrequency+NumberOfMorphemes|Subject),
-        data=poems, REML=FALSE)
+        data = poemS, REML=FALSE)
 print(summary(poems.lmer), corr=FALSE)
 
 chf <- diag(c(diag(

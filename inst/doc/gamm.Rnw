@@ -792,13 +792,15 @@ multiple-choice question probing their reading habits.  The latter variable was
 included to probe between-subject variance and to capture variance that would
 otherwise have to be accounted for through by-participant random intercepts.
 All three predictors were log-transformed and scaled.  
+%% MM: FIXME, use transform() or within() below, and do *not* call it 'poems' again
 <<poetry1,echo=TRUE,eval=TRUE>>=
-load("data/poems.rda")
+data(poems, package="RePsychLing")
 # abbreviate names 
-poems$Fre = scale(poems$LogWordFormFrequency)
-poems$Mul = scale(poems$LogMultipleChoiceRT)
+## NB the "Log*" variables do *not* belong to the data (as per doc)
+poems$Fre = scale(log(1+ poems$WordFormFrequency))
+poems$Mul = scale(log(poems$MultipleChoiceRT))
 poems$Age = scale(log(poems$Age))
-poems$Lrt = poems$LogReadingTime
+poems$Lrt = log(poems$ReadingTime)
 # order by subject and trial
 poems = poems[order(poems$Subject, poems$Trial),]
 # scale Trial
